@@ -23,13 +23,13 @@
 (defn greedy-change
   "Make change greedily - this does not make the minimal change"
   [coinset amount]
-  (let [sorted-coinset (reverse (sort coinset)) ; sort coins: highest to lowest
+  (let [sorted-coinset (reverse (sort coinset)) ; highest to lowest
         greedy-reduce (reduce (fn [state coin]
                                 (let [amount-remaining (first state)
                                       change (second state)
                                       num-coins (quot amount-remaining coin)]
                                   (if (zero? num-coins)
-                                    state ; no change in state
+                                    state ; no effect
                                     [(- amount-remaining (* num-coins coin))
                                      (concat change (repeat num-coins coin))])))
                               [amount []] ; initial state for reduce operation
