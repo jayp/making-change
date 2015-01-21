@@ -27,13 +27,14 @@
                        (let [change (make-change coinset amount)]
                          (= 1 (count change)))))
 
-;; The number of coins to change double the amount must be at most twice the
-;; number of coins to change amount
-(defspec double-amount-change
+;; The number of coins to change amount1+amount2 together must be no more than
+;; the number of coins combined from changing amount1 and amount2 seperately.
+(defspec combined-change
          (prop/for-all [coinset gen-coinset
-                        amount gen/s-pos-int]
+                        amount1 gen/s-pos-int
+                        amount2 gen/s-pos-int]
                        ;; NOTE: changing dp-change to greedy-change fails spec
                        (let [f (partial make-change dp-change coinset)
-                             change (f amount)
-                             double-change (f (* amount 2))]
-                         (<= (count double-change) (* (count change) 2)))))
+                             change-seperate (concat (f amount1) (f amount2))
+                             change-together (f (+ amount1 amount2))]
+                         (<= (count change-together) (count change-seperate)))))
